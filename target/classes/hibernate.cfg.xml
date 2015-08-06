@@ -23,6 +23,8 @@
 		<mapping class="entities.TimeTest"/>
 		<mapping class="entities.Bank"/>
 		<mapping class="entities.Credential"/>
+		<mapping class="entities.Account"/>
+		<mapping class="entities.Transaction"/>
 
 	</session-factory>
 

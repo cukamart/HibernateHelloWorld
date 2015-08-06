@@ -19,7 +19,7 @@ public class Credential {
 	private Long credentialId;
 
 	@OneToOne(cascade = CascadeType.ALL) // ked ulozime Credential tak sa persistne aj USER => BOTH ENTITIES ARE PERSIST AT THE SAME TIME
-	@JoinColumn(name="USER_ID", referencedColumnName) // column that should be used to join tables - USER_ID je nazov atributu ktory spaja tabulky v tejto TABULKE, keby sa nejak inak volal v User tabulke tak treba specifikovat referencedColumnName...name coresponding to source entity referencedColumnName referencing to Target entity
+	@JoinColumn(name="USER_ID") // column that should be used to join tables - USER_ID je nazov atributu ktory spaja tabulky v tejto TABULKE, keby sa nejak inak volal v User tabulke tak treba specifikovat referencedColumnName...name coresponding to source entity referencedColumnName referencing to Target entity
 	private User user; // user -> target credential -> source pretoze drzi FK
 
 	@Column(name = "USERNAME")

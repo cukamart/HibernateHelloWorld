@@ -1,73 +1,86 @@
 package cuka.martin.data;
 
-import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
+import entities.Account;
 import entities.Address;
-import entities.Bank;
-import entities.Credential;
-import entities.TimeTest;
+import entities.Transaction;
 import entities.User;
 
 public class Application {
 
 	public static void main(String[] args) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		
 		try {
-			Transaction transaction = session.beginTransaction();
-
-			User user = new User();
-			setUserFields(user);
+			org.hibernate.Transaction transaction = session.beginTransaction();
 			
-			Credential credential = new Credential();
-			credential.setPassword("letmein");
-			credential.setUsername("John");
+			Account account = createNewAccount();
+			account.getTransactions().add(createNewBeltPurchase(account));
+			account.getTransactions().add(createShoePurchase(account));
+			session.save(account);
 			
-			credential.setUser(user);
-			user.setCredential(credential);
-			
-			session.save(credential); // kedze v credential mam cascade nastaveny ulozi aj usera ;)
 			transaction.commit();
 			
-			User dbUser = (User)session.get(User.class, credential.getUser().getUserId());
-			System.out.println(dbUser.getFirstName());
-
+			Transaction dbTransaction = (Transaction)session.get(Transaction.class, account.getTransactions().get(0).getTransactionId());
+			System.out.println(dbTransaction.getAccount().getName());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		}finally{
 			session.close();
 			HibernateUtil.getSessionFactory().close();
 		}
 	}
 
-	private static void setAddressFields(Address address) {
-		address.setAddressLine1("line 1");
-		address.setAddressLine2("line2");
-		address.setCity("Philadelphia");
-		address.setState("PA");
-		address.setZipCode("12345");
-	}
-	
-	private static void setAddressFields2(Address address) {
-		address.setAddressLine1("line 3");
-		address.setAddressLine2("line 4");
-		address.setCity("Philadelphia");
-		address.setState("PA");
-		address.setZipCode("12345");
+	private static Transaction createNewBeltPurchase(Account account) {
+		Transaction beltPurchase = new Transaction();
+		beltPurchase.setAccount(account);
+		beltPurchase.setTitle("Dress Belt");
+		beltPurchase.setAmount(new BigDecimal("50.00"));
+		beltPurchase.setClosingBalance(new BigDecimal("0.00"));
+		beltPurchase.setCreatedBy("Kevin Bowersox");
+		beltPurchase.setCreatedDate(new Date());
+		beltPurchase.setInitialBalance(new BigDecimal("0.00"));
+		beltPurchase.setLastUpdatedBy("Kevin Bowersox");
+		beltPurchase.setLastUpdatedDate(new Date());
+		beltPurchase.setNotes("New Dress Belt");
+		beltPurchase.setTransactionType("Debit");
+		return beltPurchase;
 	}
 
-	private static void setUserFields(User user) {
-		user.setAge(22);
-		user.setBirthDate(new Date());
-		user.setCreatedBy("Kevin");
-		user.setCreatedDate(new Date());
-		user.setEmailAddress("kmb3");
-		user.setFirstName("kevin");
-		user.setLastName("bowersox");
-		user.setLastUpdatedby("kmb");
-		user.setLastUpdatedDate(new Date());
+	private static Transaction createShoePurchase(Account account) {
+		Transaction shoePurchase = new Transaction();
+		shoePurchase.setAccount(account);
+		shoePurchase.setTitle("Work Shoes");
+		shoePurchase.setAmount(new BigDecimal("100.00"));
+		shoePurchase.setClosingBalance(new BigDecimal("0.00"));
+		shoePurchase.setCreatedBy("Kevin Bowersox");
+		shoePurchase.setCreatedDate(new Date());
+		shoePurchase.setInitialBalance(new BigDecimal("0.00"));
+		shoePurchase.setLastUpdatedBy("Kevin Bowersox");
+		shoePurchase.setLastUpdatedDate(new Date());
+		shoePurchase.setNotes("Nice Pair of Shoes");
+		shoePurchase.setTransactionType("Debit");
+		return shoePurchase;
 	}
+
+	private static Account createNewAccount() {
+		Account account = new Account();
+		account.setCloseDate(new Date());
+		account.setOpenDate(new Date());
+		account.setCreatedBy("Kevin Bowersox");
+		account.setInitialBalance(new BigDecimal("50.00"));
+		account.setName("Savings Account");
+		account.setCurrentBalance(new BigDecimal("100.00"));
+		account.setLastUpdatedBy("Kevin Bowersox");
+		account.setLastUpdatedDate(new Date());
+		account.setCreatedDate(new Date());
+		return account;
+	}
+	
 }
+
