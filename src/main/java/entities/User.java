@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,6 +29,9 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // proste inkrementuje ID - nefunguje pre ORACLE
 	@Column(name = "USER_ID") // realne mena stlpcov v databaze...
 	private Long userId;
+	
+	@OneToOne(mappedBy="user") // atribut ktory ma @JoinColumn... CASCADE TIEZ LEN JEDEN INAK INFINITE LOOP
+	private Credential credential;
 
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -72,6 +76,14 @@ public class User {
 
 	public void setAge(int age) {
 		this.age = age;
+	}
+	
+	public Credential getCredential() {
+		return credential;
+	}
+
+	public void setCredential(Credential credential) {
+		this.credential = credential;
 	}
 
 	public List<Address> getAddress() {

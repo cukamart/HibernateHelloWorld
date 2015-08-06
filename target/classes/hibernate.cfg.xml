@@ -22,6 +22,7 @@
 		<mapping class="entities.User"/>
 		<mapping class="entities.TimeTest"/>
 		<mapping class="entities.Bank"/>
+		<mapping class="entities.Credential"/>
 
 	</session-factory>
 

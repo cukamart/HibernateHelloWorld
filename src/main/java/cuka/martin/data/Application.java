@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 
 import entities.Address;
 import entities.Bank;
+import entities.Credential;
 import entities.TimeTest;
 import entities.User;
 
@@ -19,18 +20,20 @@ public class Application {
 			Transaction transaction = session.beginTransaction();
 
 			User user = new User();
-			Address address = new Address();
-			Address address2 = new Address();
-
-			setAddressFields(address);
-			setAddressFields2(address2);
-			
-			user.getAddress().add(address);
-			user.getAddress().add(address2);
 			setUserFields(user);
 			
-			session.save(user);
+			Credential credential = new Credential();
+			credential.setPassword("letmein");
+			credential.setUsername("John");
+			
+			credential.setUser(user);
+			user.setCredential(credential);
+			
+			session.save(credential); // kedze v credential mam cascade nastaveny ulozi aj usera ;)
 			transaction.commit();
+			
+			User dbUser = (User)session.get(User.class, credential.getUser().getUserId());
+			System.out.println(dbUser.getFirstName());
 
 		} catch (Exception e) {
 			e.printStackTrace();
