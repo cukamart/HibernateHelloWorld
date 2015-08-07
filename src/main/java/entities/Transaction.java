@@ -3,6 +3,7 @@ package entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class Transaction {
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="ACCOUNT_ID")
 	private Account account;
 

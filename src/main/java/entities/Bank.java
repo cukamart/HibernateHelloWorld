@@ -47,9 +47,6 @@ public class Bank {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
-
-	@Column(name = "ADDRESS_TYPE")
-	private String addressType;
 	
 	@ElementCollection
 	@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
@@ -159,14 +156,6 @@ public class Bank {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-	}
-
-	public String getAddressType() {
-		return addressType;
-	}
-
-	public void setAddressType(String addressType) {
-		this.addressType = addressType;
 	}
 
 	public Map<String, String> getContacts() {

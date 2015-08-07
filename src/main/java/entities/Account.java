@@ -3,7 +3,9 @@ package entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -26,8 +30,13 @@ public class Account {
 	@Column(name = "ACCOUNT_ID")
 	private Long accountId;
 
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "USER_ACCOUNT", joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
+															inverseJoinColumns = @JoinColumn(name = "USER_ID") )
+	private Set<User> users = new HashSet<User>();
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
-	//@JoinColumn(name = "ACCOUNT_ID", nullable = false)
+	// @JoinColumn(name = "ACCOUNT_ID", nullable = false)
 	List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Column(name = "NAME")
@@ -67,6 +76,16 @@ public class Account {
 
 	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
+	}
+	
+	
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
 	public String getName() {

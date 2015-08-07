@@ -25,6 +25,7 @@
 		<mapping class="entities.Credential"/>
 		<mapping class="entities.Account"/>
 		<mapping class="entities.Transaction"/>
+		<mapping class="entities.Budget"/>
 
 	</session-factory>
 
