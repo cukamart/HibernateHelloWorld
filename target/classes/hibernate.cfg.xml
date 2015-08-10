@@ -28,6 +28,9 @@
 		<mapping class="entities.Budget"/>
 		<mapping class="entities.Currency"/>
 		<mapping class="entities.Market"/>
+		<mapping class="entities.Bond"/>
+		<mapping class="entities.Stock"/>
+		<mapping class="entities.Portfolio"/>
 
 	</session-factory>
 

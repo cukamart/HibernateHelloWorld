@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +40,7 @@ public class Account {
 	// @JoinColumn(name = "ACCOUNT_ID", nullable = false)
 	List<Transaction> transactions = new ArrayList<Transaction>();
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "ACCOUNT_TYPE")
 	private AccountType accountType;
 

@@ -10,9 +10,11 @@ import org.hibernate.SessionFactory;
 import entities.Account;
 import entities.Address;
 import entities.Bank;
+import entities.Bond;
 import entities.Credential;
-import entities.Currency;
-import entities.Market;
+import entities.Investment;
+import entities.Portfolio;
+import entities.Stock;
 import entities.Transaction;
 import entities.User;
 
@@ -22,35 +24,65 @@ public class Application {
 
 		SessionFactory sessionFactory = null;
 		Session session = null;
-		Session session2 = null;
 		org.hibernate.Transaction tx = null;
-		org.hibernate.Transaction tx2 = null;
 
 		try {
 			sessionFactory = HibernateUtil.getSessionFactory();
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
 
-			Currency currency = new Currency();
-			currency.setName("Dollar");
-			currency.setCountryName("United States");
-			currency.setSymbol("$");
-			
-			Market market = new Market();
-			market.setMarketName("London Stock Exchange");
-			market.setCurrency(currency);
+			Portfolio portfolio = new Portfolio();
+			portfolio.setName("First Investments");
 
-			session.persist(market);
+			Stock stock = createStock();
+			stock.setPortfolio(portfolio);
+
+			Bond bond = createBond();
+			bond.setPortfolio(portfolio);
+
+			portfolio.getInvestements().add(stock);
+			portfolio.getInvestements().add(bond);
+
+			session.save(stock); // dedi z Investment a tam je definovany Cascade cize ulozi aj portfolio
+			session.save(bond);
+
 			tx.commit();
 
-			Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
-			System.out.println(dbMarket.getCurrency().getName());
-		} catch (Exception e) {
+			Portfolio dbPortfolio = (Portfolio) session.get(Portfolio.class, portfolio.getPortfolioId());
+			session.refresh(dbPortfolio);
 
+			for (Investment i : dbPortfolio.getInvestements()) {
+				System.out.println(i.getName());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
 		} finally {
 			session.close();
 			sessionFactory.close();
 		}
+	}
+
+	private static Bond createBond() {
+		Bond bond = new Bond();
+		bond.setInterestRate(new BigDecimal("123.22"));
+		bond.setIssuer("JP Morgan Chase");
+		bond.setMaturityDate(new Date());
+		bond.setPurchaseDate(new Date());
+		bond.setName("Long Term Bond Purchases");
+		bond.setValue(new BigDecimal("10.22"));
+		return bond;
+	}
+
+	private static Stock createStock() {
+		Stock stock = new Stock();
+		stock.setIssuer("Allen Edmonds");
+		stock.setName("Private American Stock Purchases");
+		stock.setPurchaseDate(new Date());
+		stock.setQuantity(new BigDecimal("1922"));
+		stock.setSharePrice(new BigDecimal("100.00"));
+		return stock;
 	}
 
 	private static Bank createBank() {
@@ -68,22 +100,6 @@ public class Application {
 		bank.setState("NY");
 		bank.setZipCode("10000");
 		return bank;
-	}
-
-	private static User createUser() {
-		User user = new User();
-		Address address = createAddress();
-		user.setAddress(Arrays.asList(new Address[] { createAddress() }));
-		user.setBirthDate(new Date());
-		user.setCreatedBy("Kevin Bowersox");
-		user.setCreatedDate(new Date());
-		user.setCredential(createCredential(user));
-		user.setEmailAddress("test@test.com");
-		user.setFirstName("John");
-		user.setLastName("Doe");
-		user.setLastUpdatedby("system");
-		user.setLastUpdatedDate(new Date());
-		return user;
 	}
 
 	private static Credential createCredential(User user) {
