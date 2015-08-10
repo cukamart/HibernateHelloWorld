@@ -31,13 +31,15 @@ public class Account {
 	private Long accountId;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "USER_ACCOUNT", joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
-															inverseJoinColumns = @JoinColumn(name = "USER_ID") )
+	@JoinTable(name = "USER_ACCOUNT", joinColumns = @JoinColumn(name = "ACCOUNT_ID") , inverseJoinColumns = @JoinColumn(name = "USER_ID") )
 	private Set<User> users = new HashSet<User>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
 	// @JoinColumn(name = "ACCOUNT_ID", nullable = false)
 	List<Transaction> transactions = new ArrayList<Transaction>();
+
+	@Column(name = "ACCOUNT_TYPE")
+	private AccountType accountType;
 
 	@Column(name = "NAME")
 	private String name;
@@ -77,8 +79,6 @@ public class Account {
 	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
 	}
-	
-	
 
 	public Set<User> getUsers() {
 		return users;
@@ -166,6 +166,14 @@ public class Account {
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
+	}
+
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 
 }

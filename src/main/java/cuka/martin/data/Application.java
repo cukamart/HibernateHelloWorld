@@ -5,54 +5,69 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import entities.Account;
 import entities.Address;
+import entities.Bank;
 import entities.Credential;
+import entities.Currency;
+import entities.Market;
 import entities.Transaction;
 import entities.User;
 
 public class Application {
 
 	public static void main(String[] args) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		SessionFactory sessionFactory = null;
+		Session session = null;
+		Session session2 = null;
+		org.hibernate.Transaction tx = null;
+		org.hibernate.Transaction tx2 = null;
 
 		try {
-			org.hibernate.Transaction transaction = session.beginTransaction();
+			sessionFactory = HibernateUtil.getSessionFactory();
+			session = sessionFactory.openSession();
+			tx = session.beginTransaction();
 
-			Account account = createNewAccount();
-			Account account2 = createNewAccount();
-			User user = createUser();
-			User user2 = createUser();
-
-			account.getUsers().add(user);
-			account.getUsers().add(user2);
+			Currency currency = new Currency();
+			currency.setName("Dollar");
+			currency.setCountryName("United States");
+			currency.setSymbol("$");
 			
-			account2.getUsers().add(user);
-			account2.getUsers().add(user2);
-			
-			user.getAccounts().add(account);
-			user.getAccounts().add(account2);
-			user2.getAccounts().add(account);
-			user2.getAccounts().add(account2);
-			
-			session.save(account);
-			session.save(account2);
+			Market market = new Market();
+			market.setMarketName("London Stock Exchange");
+			market.setCurrency(currency);
 
-			transaction.commit();
+			session.persist(market);
+			tx.commit();
 
-			Account dbAccount = (Account) session.get(Account.class, account.getAccountId());
-			System.out.println(dbAccount.getUsers().iterator().next().getEmailAddress());
-			
-			User dbUser = (User) session.get(User.class, user.getUserId());
-			System.out.println(dbUser.getAccounts().iterator().next().getName());
-
+			Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
+			System.out.println(dbMarket.getCurrency().getName());
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		} finally {
 			session.close();
-			HibernateUtil.getSessionFactory().close();
+			sessionFactory.close();
 		}
+	}
+
+	private static Bank createBank() {
+		Bank bank = new Bank();
+		bank.setName("First United Federal");
+		bank.setAddressLine1("103 Washington Plaza");
+		bank.setAddressLine2("Suite 332");
+		bank.getAddress().setAddressType("PRIMARY");
+		bank.setCity("New York");
+		bank.setCreatedBy("Kevin Bowersox");
+		bank.setCreatedDate(new Date());
+		bank.setInternational(false);
+		bank.setLastUpdatedBy("Kevin Bowersox");
+		bank.setLastUpdatedDate(new Date());
+		bank.setState("NY");
+		bank.setZipCode("10000");
+		return bank;
 	}
 
 	private static User createUser() {

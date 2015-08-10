@@ -26,6 +26,8 @@
 		<mapping class="entities.Account"/>
 		<mapping class="entities.Transaction"/>
 		<mapping class="entities.Budget"/>
+		<mapping class="entities.Currency"/>
+		<mapping class="entities.Market"/>
 
 	</session-factory>
 
