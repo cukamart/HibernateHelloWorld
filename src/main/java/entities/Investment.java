@@ -4,25 +4,26 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.TableGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Investment {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name="INVESTMENT")
+@DiscriminatorColumn(name="INVESTMENT_TYPE")
+public class Investment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "key_generator")
-	@TableGenerator(table = "ifinances_keys", pkColumnName = "pk_name", valueColumnName = "pk_value", name = "key_generator")
+	@GeneratedValue
 	@Column(name = "INVESTMENT_ID")
 	private Long investmentId;
 

@@ -1,19 +1,17 @@
 package cuka.martin.data;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import cuka.martin.data.doa.BankDao;
 import entities.Account;
 import entities.Address;
 import entities.Bank;
 import entities.Bond;
 import entities.Credential;
-import entities.Investment;
-import entities.Portfolio;
 import entities.Stock;
 import entities.Transaction;
 import entities.User;
@@ -29,31 +27,18 @@ public class Application {
 		try {
 			sessionFactory = HibernateUtil.getSessionFactory();
 			session = sessionFactory.openSession();
+
+			BankDao dao = new BankDao();
+			dao.setSession(session);
+
 			tx = session.beginTransaction();
 
-			Portfolio portfolio = new Portfolio();
-			portfolio.setName("First Investments");
+			Bank bank= createBank();
 
-			Stock stock = createStock();
-			stock.setPortfolio(portfolio);
-
-			Bond bond = createBond();
-			bond.setPortfolio(portfolio);
-
-			portfolio.getInvestements().add(stock);
-			portfolio.getInvestements().add(bond);
-
-			session.save(stock); // dedi z Investment a tam je definovany Cascade cize ulozi aj portfolio
-			session.save(bond);
+			//dao.save(bank);
+			System.out.println("SOM TU " +dao.findById(4L).getName());
 
 			tx.commit();
-
-			Portfolio dbPortfolio = (Portfolio) session.get(Portfolio.class, portfolio.getPortfolioId());
-			session.refresh(dbPortfolio);
-
-			for (Investment i : dbPortfolio.getInvestements()) {
-				System.out.println(i.getName());
-			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,22 +51,22 @@ public class Application {
 
 	private static Bond createBond() {
 		Bond bond = new Bond();
-		bond.setInterestRate(new BigDecimal("123.22"));
-		bond.setIssuer("JP Morgan Chase");
+		bond.setInterestRate(new BigDecimal("666.66"));
+		bond.setIssuer("MOJA");
 		bond.setMaturityDate(new Date());
 		bond.setPurchaseDate(new Date());
-		bond.setName("Long Term Bond Purchases");
-		bond.setValue(new BigDecimal("10.22"));
+		bond.setName("MOJA");
+		bond.setValue(new BigDecimal("6.66"));
 		return bond;
 	}
 
 	private static Stock createStock() {
 		Stock stock = new Stock();
-		stock.setIssuer("Allen Edmonds");
-		stock.setName("Private American Stock Purchases");
+		stock.setIssuer("TVOJA");
+		stock.setName("TVOJA");
 		stock.setPurchaseDate(new Date());
-		stock.setQuantity(new BigDecimal("1922"));
-		stock.setSharePrice(new BigDecimal("100.00"));
+		stock.setQuantity(new BigDecimal("666"));
+		stock.setSharePrice(new BigDecimal("666.00"));
 		return stock;
 	}
 
